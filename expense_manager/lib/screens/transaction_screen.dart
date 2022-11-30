@@ -2,6 +2,7 @@ import 'package:expense_manager/controllers/transaction_provider.dart';
 import 'package:expense_manager/model/transaction.dart';
 import 'package:expense_manager/screens/balance_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class TransactionScreen extends StatefulWidget {
   const TransactionScreen({super.key});
@@ -15,13 +16,9 @@ class TransactionScreen extends StatefulWidget {
 class _TransactionScreenState extends State<TransactionScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  TextEditingController _titleController = TextEditingController();
-  TextEditingController _priceController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
-
-  String? toModelTitle = "";
-  String? toModelPrice = "";
-  String? toModelDescription = "";
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   bool transactionExpense = false;
   bool transactionIncome = false;
@@ -178,15 +175,22 @@ class _TransactionScreenState extends State<TransactionScreen> {
               width: 360,
               child: ElevatedButton(
                 onPressed: () {
-                  TransactionProvider model = TransactionProvider(
+                  Transaction transaction = Transaction(
                     title: _titleController.text,
-                    price: transactionValues == true
-                        ? num.tryParse(_priceController.text)
-                        : num.tryParse(_priceController.text)! * -1,
+                    date: DateTime.now(),
+                    price: num.parse(_priceController.text),
+                    type: transactionValues!,
                     description: _descriptionController.text,
-                    type: transactionValues,
-                    date: DateTime.now().toIso8601String(),
                   );
+                  Provider.of<TransactionProvider>(context, listen: false)
+                      .transactionsAdd(transaction);
+
+                  setState(() {
+                    _titleController.clear();
+                    _descriptionController.clear();
+                    _priceController.clear();
+                    transactionValues = null;
+                  });
                   Navigator.pop(context);
                 },
                 style: ButtonStyle(

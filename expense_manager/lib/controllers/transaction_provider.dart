@@ -3,18 +3,15 @@ import 'package:flutter/material.dart';
 
 class TransactionProvider extends ChangeNotifier {
   List<Transaction> transactions = [];
-
-  String? title;
-  num? price;
-  String? description;
-  bool? type;
-  String? date;
-
-  TransactionProvider(
-      {this.title, this.price, this.description, this.type, this.date});
+  num total = 0;
 
   void transactionsAdd(Transaction trans) {
     transactions.add(trans);
+    sum(trans);
     notifyListeners();
+  }
+
+  void sum(Transaction trans) {
+    trans.type ? total -= trans.price : total += trans.price;
   }
 }

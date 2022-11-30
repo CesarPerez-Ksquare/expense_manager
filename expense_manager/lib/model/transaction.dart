@@ -1,9 +1,14 @@
 class Transaction {
-  String? title;
-  num? price;
-  String? description;
-  bool? type;
-  String? date;
+  String title;
+  num price;
+  String description;
+  bool type;
+  DateTime date;
 
-  Transaction({this.title, this.price, this.description, this.type, this.date});
+  Transaction(
+      {required this.title,
+      required this.price,
+      required this.description,
+      required this.type,
+      required this.date});
 }
